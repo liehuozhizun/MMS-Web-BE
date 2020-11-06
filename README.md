@@ -22,7 +22,9 @@ A Front-end website is under development.
 
 |                            |                            |
 |----------------------------|----------------------------|
-| ***IT Manager/PM<br/>***   | Hang Yuan (hyuan3@ucsc.edu)|
+| ***IT Manager***           | Hang Yuan (hyuan3@ucsc.edu)|
+| ***UX / PM***              | Yuhao Chen                 |
+|                            | Yanyao Hu                  |
 | ***Senior Developer***     | Jack(Dun) Liu              |
 |                            | Zhizhou Jiang              |
 | ***Developer***            | Eric(Zihao) Dong           |
