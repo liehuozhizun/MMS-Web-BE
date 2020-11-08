@@ -1,4 +1,4 @@
-# Membership Management Software
+# Membership Management System
 
 This project is managed by
 <br/>&nbsp;&nbsp;&nbsp;&nbsp;Information Technology Support (Dept.)
@@ -11,7 +11,7 @@ This project is managed by
 
 ## Brief Introduction
 
-<br/>&nbsp;&nbsp;&nbsp;&nbsp;MMS is a Rest-based Website developed with Java and Spring Boot Framework. This is Back-end Restful Service.
+<br/>&nbsp;&nbsp;&nbsp;&nbsp;MMS is a rest-based website developed with Java and Spring Boot Framework. This is a back-end restful service.
 <br/>&nbsp;&nbsp;&nbsp;&nbsp;It is designed for our staffs to manage our members' information and other daily transactions of our organization.
 <br/>&nbsp;&nbsp;&nbsp;&nbsp;At this time, this software uses H2 as the local database but will be replaced by a cloud database, in the future, to better support our staffs. 
 A Front-end website is under development.
