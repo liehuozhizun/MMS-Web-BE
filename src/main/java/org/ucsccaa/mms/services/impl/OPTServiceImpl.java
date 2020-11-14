@@ -3,7 +3,7 @@ package org.ucsccaa.mms.services.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.ucsccaa.mms.Repositories.OPTRepository;
+import org.ucsccaa.mms.repositories.OPTRepository;
 import org.ucsccaa.mms.domains.OPT;
 import org.ucsccaa.mms.services.OPTService;
 

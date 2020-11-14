@@ -7,7 +7,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.ucsccaa.mms.Repositories.OPTRepository;
+import org.ucsccaa.mms.repositories.OPTRepository;
 import org.ucsccaa.mms.domains.OPT;
 import org.ucsccaa.mms.services.impl.OPTServiceImpl;
 
