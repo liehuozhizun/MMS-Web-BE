@@ -1,4 +1,4 @@
-package org.ucsccaa.mms;
+package org.ucsccaa.mms.services;
 
 import org.junit.Before;
 import org.ucsccaa.mms.domains.Member;
