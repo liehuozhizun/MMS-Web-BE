@@ -131,8 +131,9 @@ public class MemberController {
         return new ServiceResponse<Optional<Member>>(member);
     }
 
-    @GetMapping("/")
+    @GetMapping
     public ServiceResponse<List<Member>> getAll() {
+        System.out.println("getAll() method in controller");
         return new ServiceResponse<>(memberService.findAll());
     }
 }
