@@ -1,21 +1,23 @@
 package org.ucsccaa.mms.services;
 
-import org.junit.Before;
-import org.ucsccaa.mms.domains.Member;
-import org.junit.Test;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.ucsccaa.mms.domains.Member;
 import org.ucsccaa.mms.repositories.MemberRepository;
-import org.ucsccaa.mms.services.MemberService;
-
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Optional;
-
-import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MemberServiceTest {

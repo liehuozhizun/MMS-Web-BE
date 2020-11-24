@@ -7,7 +7,6 @@ import org.ucsccaa.mms.services.MemberService;
 import org.ucsccaa.mms.domains.Member;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;

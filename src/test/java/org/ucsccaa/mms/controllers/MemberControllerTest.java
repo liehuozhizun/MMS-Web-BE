@@ -1,11 +1,19 @@
 package org.ucsccaa.mms.controllers;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -14,16 +22,8 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import static org.mockito.Mockito.*;
-
-import org.ucsccaa.mms.controllers.MemberController;
 import org.ucsccaa.mms.domains.Member;
 import org.ucsccaa.mms.services.MemberService;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @RunWith(SpringRunner.class)
 public class MemberControllerTest {

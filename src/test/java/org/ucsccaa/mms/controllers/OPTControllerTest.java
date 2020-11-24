@@ -1,7 +1,14 @@
 package org.ucsccaa.mms.controllers;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,9 +20,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-
-import org.springframework.test.web.servlet.MvcResult;
-
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -26,11 +30,6 @@ import org.ucsccaa.mms.domains.Member;
 import org.ucsccaa.mms.domains.OPT;
 import org.ucsccaa.mms.domains.Staff;
 import org.ucsccaa.mms.services.OPTService;
-
-import java.time.LocalDateTime;
-import java.util.Optional;
-
-import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = MembershipManagementSystemApplication.class)
