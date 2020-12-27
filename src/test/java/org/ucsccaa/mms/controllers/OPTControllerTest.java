@@ -34,10 +34,13 @@ import org.ucsccaa.mms.services.OPTService;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = MembershipManagementSystemApplication.class)
 public class OPTControllerTest {
+
     protected MockMvc mockMvc;
     private final ObjectMapper objectMapper = new ObjectMapper();
+
     @Mock
     private OPTService optService;
+
     @InjectMocks
     private OPTController optController;
     private final OPT expectOPT = new OPT(
