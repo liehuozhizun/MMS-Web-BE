@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import java.util.List;
 
 @Data
@@ -15,7 +16,7 @@ import java.util.List;
 public class Authorization {
     @Id
     private LEVEL level;
-    private List<Authorities> AuthorList;
+    private Authorities AuthorList;
 }
 enum LEVEL{
     LEVEL_1,

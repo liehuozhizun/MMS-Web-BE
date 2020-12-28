@@ -6,5 +6,5 @@ import org.ucsccaa.mms.domains.Authorization;
 
 @Repository
 public interface AuthorizeRepository extends JpaRepository<Authorization, Long> {
-    Boolean checkAuthority(String level, String authority);
+//    Boolean checkAuthority(String level, String authority);
 }
