@@ -6,5 +6,5 @@ import org.ucsccaa.mms.repositories.AuthorizeRepository;
 
 @Service
 public interface AuthorService {
-    Boolean checkAuthority(String level, String authority);
+    Boolean checkAuthority(String level, String... authority);
 }

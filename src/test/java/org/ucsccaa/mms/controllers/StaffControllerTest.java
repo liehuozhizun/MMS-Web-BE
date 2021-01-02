@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.ucsccaa.mms.MembershipManagementSystemApplication;
+import org.ucsccaa.mms.domains.Authorization;
 import org.ucsccaa.mms.domains.Staff;
 import org.ucsccaa.mms.domains.Member;
 import org.ucsccaa.mms.services.StaffService;
@@ -37,7 +38,7 @@ public class StaffControllerTest {
     private StaffService service;
     @InjectMocks
     private StaffController controller;
-    private final Staff expectedStaff = new Staff((long)1, "A", "admin", "authorization", new Member());
+    private final Staff expectedStaff = new Staff((long)1, "A", "admin", new Authorization(), new Member());
 
     @Before
     public void Before() {
