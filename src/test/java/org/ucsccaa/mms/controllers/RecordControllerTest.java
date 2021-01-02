@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.ucsccaa.mms.MembershipManagementSystemApplication;
+import org.ucsccaa.mms.domains.Authorization;
 import org.ucsccaa.mms.domains.Member;
 import org.ucsccaa.mms.domains.Record;
 import org.ucsccaa.mms.domains.Staff;
@@ -34,7 +35,7 @@ public class RecordControllerTest {
 
     private final Long id = 1L;
     private final Member member = new Member(id,"...","...","...","...","...","...","...","...","...","...","...","...","...","...","...","...","...","...","...","...","...","...",false);
-    private final Staff staff = new Staff(id, "dept","pos", "auth", member);
+    private final Staff staff = new Staff(id, "dept","pos", new Authorization(), member);
     private final Record expectedRecord = new Record(id, staff, member, LocalDateTime.now(), "...");
     private final List<Record> expectedRecordList = new ArrayList() {{ add(expectedRecord);}};
     private final List<Record> emptyRecordList = new ArrayList<>();

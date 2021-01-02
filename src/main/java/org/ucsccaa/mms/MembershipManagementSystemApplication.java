@@ -9,5 +9,4 @@ public class MembershipManagementSystemApplication {
     public static void main(String[] args) {
         SpringApplication.run(MembershipManagementSystemApplication.class, args);
     }
-
 }

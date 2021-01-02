@@ -1,12 +1,6 @@
 package org.ucsccaa.mms.domains;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,7 +16,8 @@ public class Staff {
     private Long id;
     private String dept;
     private String position;
-    private String authorization; 
+    @ManyToOne
+    private Authorization authorization;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="memId", referencedColumnName = "id")
     private Member member;

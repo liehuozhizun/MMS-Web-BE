@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.ucsccaa.mms.domains.Authorization;
 import org.ucsccaa.mms.domains.Staff;
 import org.ucsccaa.mms.domains.Member;
 import org.ucsccaa.mms.repositories.StaffRepository;
@@ -41,7 +42,7 @@ public class StaffServiceTest {
     public void updateStaffTest() {
         Staff expectedStaff = new Staff();
         expectedStaff.setId((long)1);
-        expectedStaff.setAuthorization("authorization");
+        expectedStaff.setAuthorization(new Authorization());
         expectedStaff.setDept("A");
         expectedStaff.setPosition("admin");
         expectedStaff.setMember(new Member());
@@ -70,7 +71,7 @@ public class StaffServiceTest {
     public void getStaffTest() {
         Staff expectedStaff = new Staff();
         expectedStaff.setId((long)1);
-        expectedStaff.setAuthorization("authorization");
+        expectedStaff.setAuthorization(new Authorization());
         expectedStaff.setDept("A");
         expectedStaff.setPosition("admin");
         expectedStaff.setMember(new Member());

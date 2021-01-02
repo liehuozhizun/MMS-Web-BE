@@ -9,7 +9,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.ucsccaa.mms.repositories.OPTRepository;
 import org.ucsccaa.mms.domains.OPT;
-import org.ucsccaa.mms.services.impl.OPTServiceImpl;
 
 import java.util.Optional;
 
@@ -21,7 +20,7 @@ public class OPTServiceTest {
     private OPTRepository optRepository;
 
     @InjectMocks
-    private OPTServiceImpl optService;
+    private OPTService optService;
 
     @Test
     public void findByIDTest() {
