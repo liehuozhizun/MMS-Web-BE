@@ -22,7 +22,7 @@ public class AuthorizationFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         final String token = ((HttpServletRequest)request).getHeader("authorization");
-        String level = authenticationService.loadUserByUsername(authenticationService.getUserNameFromToken(token)).getStaff().getAuthorization();
+        String level = authenticationService.loadUserByUsername(authenticationService.getUserNameFromToken(token)).getStaff().getAuthorization().getLevel().toString();
         String method = ((HttpServletRequest) request).getMethod().toUpperCase();
         String uri = ((HttpServletRequest) request).getRequestURI().substring(1).toUpperCase();
         try {
