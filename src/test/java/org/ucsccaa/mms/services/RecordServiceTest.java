@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import org.ucsccaa.mms.domains.Authorization;
 import org.ucsccaa.mms.domains.Member;
 import org.ucsccaa.mms.domains.Record;
 import org.ucsccaa.mms.domains.Staff;
@@ -35,7 +36,7 @@ public class RecordServiceTest {
 
     private final Long id = 1L;
     private final Member member = new Member(1L,"...","...","...","...","...","...","...","...","...","...","...","...","...","...","...","...","...","...","...","...","...","...",false);
-    private final Staff staff = new Staff(id, "dept","pos", "auth", member);
+    private final Staff staff = new Staff(id, "dept","pos", new Authorization (), member);
     private final String logInfo = "...";
     private final Record expectedRecord = new Record(id, staff, member, LocalDateTime.now(), logInfo);
     private final List<Record> expectedRecordList = new ArrayList() {{ add(expectedRecord);}};
@@ -44,7 +45,7 @@ public class RecordServiceTest {
 
     @Before
     public void configuration() {
-        Mockito.when(recordRepository.save(Mockito.eq(expectedRecord))).thenReturn(expectedRecord);
+        //Mockito.when(recordRepository.save(Mockito.eq(expectedRecord))).thenReturn(expectedRecord);
         Mockito.when(staffRepository.findById(Mockito.eq(id))).thenReturn(optionalExpectedStaff);
         Mockito.when(memberRepository.findById(Mockito.eq(id))).thenReturn(optionalExpectedMember);
         Mockito.when(recordRepository.findByStaff(Mockito.eq(staff))).thenReturn(expectedRecordList);
