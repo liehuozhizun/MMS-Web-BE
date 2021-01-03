@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.ucsccaa.mms.domains.Member;
 import org.ucsccaa.mms.domains.Staff;
 import org.ucsccaa.mms.domains.UserDetails;
+import org.ucsccaa.mms.domains.Authorization;
 import org.ucsccaa.mms.repositories.UserDetailsRepository;
 import org.ucsccaa.mms.services.impl.AuthenticationServiceImpl;
 
@@ -26,11 +27,13 @@ public class AuthenticationServiceTest {
     @InjectMocks
     private AuthenticationServiceImpl authenticationService;
 
+    private ArrayList<Authorization.Authorities> authorList = new ArrayList<Authorization.Authorities>();
+    private final Authorization authorization = new Authorization(1L, Authorization.LEVEL.LEVEL_1, authorList);
     private final Member member = new Member(1L,"test","test","test","test",
             "test","test","test","test","test","test","test",
             "test","test","test","test","test","test","test","test",
             "test","test","test",true);
-    private final Staff staff = new Staff(1L, "test", "test", "test", member);
+    private final Staff staff = new Staff(1L, "test", "test", authorization, member);
     private final UserDetails expectedUser = new UserDetails(1L, "test", "test", staff);
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
@@ -61,6 +64,32 @@ public class AuthenticationServiceTest {
     @Test(expected = RuntimeException.class)
     public void testGetUserNameFromToken_exception() {
         authenticationService.getUserNameFromToken(null);
+    }
+
+    @Test
+    public void testGetAuthorityFromToken() {
+        when(userDetailsRepository.findByUserName("test")).thenReturn(expectedUser);
+        String token = authenticationService.generateJwtToken(expectedUser);
+        String authority = authenticationService.getAuthorityFromToken(token);
+        Assert.assertEquals(authorList.toString(), authority);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testGetAuthorityFromToken_exception() {
+        authenticationService.getAuthorityFromToken(null);
+    }
+
+    @Test
+    public void testGetLevelFromToken() {
+        when(userDetailsRepository.findByUserName("test")).thenReturn(expectedUser);
+        String token = authenticationService.generateJwtToken(expectedUser);
+        String level = authenticationService.getLevelFromToken(token);
+        Assert.assertEquals(Authorization.LEVEL.LEVEL_1.toString(), level);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testGetLevelFromToken_exception() {
+        authenticationService.getLevelFromToken(null);
     }
 
     @Test

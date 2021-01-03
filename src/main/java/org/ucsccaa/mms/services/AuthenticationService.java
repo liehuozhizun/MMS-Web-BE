@@ -9,6 +9,8 @@ import java.util.Date;
 public interface AuthenticationService {
     UserDetails register();
     String getUserNameFromToken(String token);
+    String getAuthorityFromToken(String token);
+    String getLevelFromToken(String token);
     UserDetails loadUserByUsername(String name);
     String generateJwtToken(UserDetails userDetails);
     Date getIssuedDateFromToken(String token);
