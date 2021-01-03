@@ -1,8 +1,6 @@
 package org.ucsccaa.mms.services.impl;
 
 import io.jsonwebtoken.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,7 +16,6 @@ import java.util.Date;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
-    private static final Logger logger = LoggerFactory.getLogger(AuthenticationServiceImpl.class);
 
     @Autowired
     private UserDetailsRepository userDetailsRepository;
@@ -33,25 +30,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    @Override
-    public UserDetails register() {
-        UserDetails userDetails = new UserDetails();
-        String password = userDetails.getPassword();
-        userDetails.setPassword(encoder.encode(userDetails.getPassword()));
-        userDetailsRepository.save(userDetails);
-        userDetails.setPassword(password);
-        return userDetails;
-    }
 
     @Override
     public String generateJwtToken(UserDetails userDetails) {
         if (userDetails == null) {
             throw new RuntimeException("argument cannot be null");
         }
+        String authorities = userDetails.getStaff().getAuthorization().getLevel().toString();
         return Jwts.builder()
                 .setSubject(userDetails.getUserName())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 3600000)) // 1h
+                .claim("authority", authorities)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
@@ -62,6 +52,48 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new RuntimeException("argument cannot be null");
         }
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    }
+
+    @Override
+    public String getAuthorityFromToken(String token) {
+        if (token == null) {
+            throw new RuntimeException("argument cannot be null");
+        }
+        String userName;
+        try {
+            userName = getUserNameFromToken(token);
+        } catch (Exception e) {
+            throw e;
+        }
+        UserDetails userDetails;
+        try {
+            userDetails = loadUserByUsername(userName);
+        } catch (Exception e) {
+            throw e;
+        }
+        String authority = userDetails.getStaff().getAuthorization().getAuthorityList().toString();
+        return authority;
+    }
+
+    @Override
+    public String getLevelFromToken(String token) {
+        if (token == null) {
+            throw new RuntimeException("argument cannot be null");
+        }
+        String userName;
+        try {
+            userName = getUserNameFromToken(token);
+        } catch (Exception e) {
+            throw e;
+        }
+        UserDetails userDetails;
+        try {
+            userDetails = loadUserByUsername(userName);
+        } catch (Exception e) {
+            throw e;
+        }
+        String level = userDetails.getStaff().getAuthorization().getLevel().toString();
+        return level;
     }
 
     @Override
@@ -83,20 +115,25 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public Boolean validateJwtToken(String token) {
-        String userName = getUserNameFromToken(token);
+        String userName;
+        try {
+            userName = getUserNameFromToken(token);
+        } catch (Exception e) {
+            throw e;
+        }
 
         try {
             Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
         } catch (SignatureException e) {
-            logger.error("Invalid JWT signature: ", e.getMessage());
+            throw new RuntimeException("Invalid JWT signature: " + e.getMessage());
         } catch (MalformedJwtException e) {
-            logger.error("Invalid JWT token: ", e.getMessage());
+            throw new RuntimeException("Invalid JWT token: " + e.getMessage());
         } catch (ExpiredJwtException e) {
-            logger.error("JWT token is expired: ", e.getMessage());
+            throw new RuntimeException("JWT token is expired: " + e.getMessage());
         } catch (UnsupportedJwtException e) {
-            logger.error("JWT token is unsupported: ", e.getMessage());
+            throw new RuntimeException("JWT token is unsupported: " + e.getMessage());
         } catch (IllegalArgumentException e) {
-            logger.error("JWT string is empty: ", e.getMessage());
+            throw new RuntimeException("JWT string is empty: " + e.getMessage());
         }
         return (userDetailsRepository.findByUserName(userName) != null);
     }
