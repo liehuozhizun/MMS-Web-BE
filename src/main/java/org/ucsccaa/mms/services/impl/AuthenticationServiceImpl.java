@@ -30,15 +30,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    @Override
-    public UserDetails register() {
-        UserDetails userDetails = new UserDetails();
-        String password = userDetails.getPassword();
-        userDetails.setPassword(encoder.encode(userDetails.getPassword()));
-        userDetailsRepository.save(userDetails);
-        userDetails.setPassword(password);
-        return userDetails;
-    }
 
     @Override
     public String generateJwtToken(UserDetails userDetails) {

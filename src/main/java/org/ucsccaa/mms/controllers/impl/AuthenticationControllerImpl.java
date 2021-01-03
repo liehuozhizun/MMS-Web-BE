@@ -36,12 +36,4 @@ public class AuthenticationControllerImpl implements AuthenticationController {
         }
         return new ServiceResponse<>(token);
     }
-
-    @ApiOperation("create new account")
-    @Override
-    @GetMapping
-    public ServiceResponse<UserDetails> register(HttpServletRequest req) {
-        UserDetails userDetails = authenticationServiceImpl.register();
-        return new ServiceResponse<>(userDetails);
-    }
 }

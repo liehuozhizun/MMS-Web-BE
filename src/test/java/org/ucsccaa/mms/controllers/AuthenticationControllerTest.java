@@ -76,25 +76,4 @@ public class AuthenticationControllerTest {
         mockMvc.perform(builder)
                 .andExpect(MockMvcResultMatchers.status().is4xxClientError());
     }
-
-    @Test
-    public void testRegister() throws Exception {
-        when(authenticationService.register()).thenReturn(expectedUser);
-        String json = objectMapper.writeValueAsString(expectedUser);
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
-                .get("/authentications")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json);
-
-        mockMvc.perform(builder)
-                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.id")
-                        .value(expectedUser.getId()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.userName")
-                        .value(expectedUser.getUserName()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.password")
-                        .value(expectedUser.getPassword()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.staff")
-                        .value(expectedUser.getStaff()));
-    }
 }

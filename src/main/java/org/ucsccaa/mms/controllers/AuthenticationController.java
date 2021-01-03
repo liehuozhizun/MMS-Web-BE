@@ -8,5 +8,4 @@ import javax.servlet.http.HttpServletRequest;
 
 public interface AuthenticationController {
     ServiceResponse<?> createJwt(@RequestBody UserDetails userDetails);
-    ServiceResponse<UserDetails> register(HttpServletRequest req);
 }

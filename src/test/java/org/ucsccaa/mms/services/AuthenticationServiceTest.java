@@ -38,12 +38,6 @@ public class AuthenticationServiceTest {
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     @Test
-    public void testRegister() {
-        UserDetails userDetails = authenticationService.register();
-        Assert.assertNotNull(userDetails);
-    }
-
-    @Test
     public void testGenerateJwtToken() {
         String token = authenticationService.generateJwtToken(expectedUser);
         Assert.assertNotNull(token);
