@@ -61,7 +61,7 @@ public class MemberController {
     }
 
     @GetMapping("/id/{id}")
-    public ServiceResponse<Optional<Member>> getMember(@PathVariable("id") Long id) {
+    public ServiceResponse<Member> getMember(@PathVariable("id") Long id) {
         Optional<Member> member;
         try {
             member = memberService.getMember(id);
@@ -71,11 +71,11 @@ public class MemberController {
         } catch (Exception e) {
             return new ServiceResponse<>(Status.ERROR, e.getMessage());
         }
-        return new ServiceResponse<Optional<Member>>(member);
+        return new ServiceResponse<Member>(member.get());
     }
 
     @GetMapping("/email/{email}")
-    public ServiceResponse<Optional<Member>> getMemberByEmail(@PathVariable("email") String email) {
+    public ServiceResponse<Member> getMemberByEmail(@PathVariable("email") String email) {
         Optional<Member> member;
         try {
             member = memberService.getMemberByEmail(email);
@@ -85,11 +85,11 @@ public class MemberController {
         } catch (Exception e) {
             return new ServiceResponse<>(Status.ERROR, e.getMessage());
         }
-        return new ServiceResponse<Optional<Member>>(member);
+        return new ServiceResponse<Member>(member.get());
     }
 
     @GetMapping("/phone/{phone}")
-    public ServiceResponse<Optional<Member>> getMemberByPhone(@PathVariable("phone") String phone) {
+    public ServiceResponse<Member> getMemberByPhone(@PathVariable("phone") String phone) {
         Optional<Member> member;
         try {
             member = memberService.getMemberByPhone(phone);
@@ -99,11 +99,11 @@ public class MemberController {
         } catch (Exception e) {
             return new ServiceResponse<>(Status.ERROR, e.getMessage());
         }
-        return new ServiceResponse<Optional<Member>>(member);
+        return new ServiceResponse<Member>(member.get());
     }
 
     @GetMapping("/wechat/{wechat}")
-    public ServiceResponse<Optional<Member>> getMemberByWechat(@PathVariable("wechat") String wechat) {
+    public ServiceResponse<Member> getMemberByWechat(@PathVariable("wechat") String wechat) {
         Optional<Member> member;
         try {
             member = memberService.getMemberByWechat(wechat);
@@ -113,11 +113,11 @@ public class MemberController {
         } catch (Exception e) {
             return new ServiceResponse<>(Status.ERROR, e.getMessage());
         }
-        return new ServiceResponse<Optional<Member>>(member);
+        return new ServiceResponse<Member>(member.get());
     }
 
     @GetMapping("/stdid/{stdid}")
-    public ServiceResponse<Optional<Member>> getMemberByStdId(@PathVariable("stdid") String stdId) {
+    public ServiceResponse<Member> getMemberByStdId(@PathVariable("stdid") String stdId) {
         Optional<Member> member;
         try {
             member = memberService.getMemberByStdId(stdId);
@@ -127,7 +127,7 @@ public class MemberController {
         } catch (Exception e) {
             return new ServiceResponse<>(Status.ERROR, e.getMessage());
         }
-        return new ServiceResponse<Optional<Member>>(member);
+        return new ServiceResponse<Member>(member.get());
     }
 
     @GetMapping("/")
