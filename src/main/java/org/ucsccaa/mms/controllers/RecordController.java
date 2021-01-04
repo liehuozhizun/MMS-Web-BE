@@ -6,14 +6,20 @@ import org.ucsccaa.mms.domains.Record;
 import org.ucsccaa.mms.models.ServiceResponse;
 import org.ucsccaa.mms.models.Status;
 import org.ucsccaa.mms.services.RecordService;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 import java.util.List;
 
+@Api(tags = "RECORD RESTFUL API")
 @RestController
 @RequestMapping("record")
 public class RecordController {
     @Autowired
     private RecordService recordService;
 
+    @ApiOperation("get Record by Member ID")
     @GetMapping("/member/{memberId}")
     public ServiceResponse<List<Record>> getRecordByMemberId(@PathVariable Long memberId) {
         try {
@@ -28,6 +34,7 @@ public class RecordController {
         }
     }
 
+    @ApiOperation("get Record by Staff ID")
     @GetMapping("/staff/{staffId}")
     public ServiceResponse<List<Record>> getRecordByStaffId(@PathVariable Long staffId) {
         try {
@@ -42,6 +49,7 @@ public class RecordController {
         }
     }
 
+    @ApiOperation("get all Records")
     @GetMapping
     public ServiceResponse<List<Record>> getAllRecords() {
         List<Record> recordList = recordService.ListAllRecord();

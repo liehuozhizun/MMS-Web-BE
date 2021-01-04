@@ -24,14 +24,14 @@ import org.ucsccaa.mms.services.TreasuryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api(tags = "Treasury RESTFUL API")
+@Api(tags = "TREASURY RESTFUL API")
 @RestController
 @RequestMapping("/treasury")
 public class TreasuryController {
     @Autowired
     private TreasuryService treasuryService;
 
-    @ApiOperation("create new treasury")
+    @ApiOperation("create new Treasury")
     @PostMapping
     public ServiceResponse<URI> addTreasury(@RequestBody Treasury treasury, HttpServletRequest req)
             throws URISyntaxException {
@@ -43,7 +43,7 @@ public class TreasuryController {
         }
     }
 
-    @ApiOperation("update treasury")
+    @ApiOperation("update Treasury by ID")
     @PutMapping
     public ServiceResponse<Treasury> updateTreasury(@RequestBody Treasury treasury) {
         try {
@@ -55,7 +55,7 @@ public class TreasuryController {
         }
     }
 
-    @ApiOperation("get treasury by ID")
+    @ApiOperation("get Treasury by ID")
     @GetMapping("/{id}")
     public ServiceResponse<Treasury> getTreasury(@PathVariable Long id) {
         try {
@@ -67,7 +67,7 @@ public class TreasuryController {
         }
     }
 
-    @ApiOperation("delete treasury by ID")
+    @ApiOperation("delete Treasury by ID")
     @DeleteMapping("/{id}")
     public ServiceResponse<Object> deleteTreasury(@PathVariable Long id) {
         try {
@@ -78,7 +78,7 @@ public class TreasuryController {
         }
     }
 
-    @ApiOperation("get treasuries by Staff ID")
+    @ApiOperation("get Treasuries by Staff ID")
     @GetMapping("/staff/{staff_id}")
     public ServiceResponse<List<Treasury>> getTreasuriesByStaff(@PathVariable("staff_id") Long staffId) {
         try {
@@ -89,7 +89,7 @@ public class TreasuryController {
         }
     }
 
-    @ApiOperation("get all treasuries")
+    @ApiOperation("get all Treasuries")
     @GetMapping
     public ServiceResponse<List<Treasury>> getAllTreasuries() {
         List<Treasury> treasuries = treasuryService.getAll();

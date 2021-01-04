@@ -15,18 +15,24 @@ import org.ucsccaa.mms.domains.Item;
 import org.ucsccaa.mms.models.ServiceResponse;
 import org.ucsccaa.mms.models.Status;
 import org.ucsccaa.mms.services.ItemService;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 
+@Api(tags = "ITEM RESTFUL API")
 @RestController
 @RequestMapping("/items")
 public class ItemController {
     @Autowired
     private ItemService service;
 
+    @ApiOperation("create new Item")
     @PostMapping
     public ServiceResponse<URI> addItem(@RequestBody Item item, HttpServletRequest req) throws URISyntaxException {
         try {
@@ -37,6 +43,7 @@ public class ItemController {
         }
     }
 
+    @ApiOperation("update Item by ID")
     @PutMapping
     public ServiceResponse<Item> updateItem(@RequestBody Item item) {
         Item updatedItem = null;
@@ -50,6 +57,7 @@ public class ItemController {
         return new ServiceResponse<Item>(updatedItem);
     }
 
+    @ApiOperation("get Item by ID")
     @GetMapping("/{id}")
     public ServiceResponse<Item> getItem(@PathVariable Long id) {
         Item item = null;
@@ -63,12 +71,14 @@ public class ItemController {
         return new ServiceResponse<Item>(item);
     }
 
+    @ApiOperation("get all Items")
     @GetMapping
     public ServiceResponse<List<Item>> getAll() {
         List<Item> allItem = service.getAll();
         return new ServiceResponse<List<Item>>(allItem);
     }
 
+    @ApiOperation("delete Item by ID")
     @DeleteMapping("/{id}")
     public ServiceResponse<Object> deleteItemById(@PathVariable Long id) {
         try {

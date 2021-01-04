@@ -16,17 +16,22 @@ import org.ucsccaa.mms.domains.Staff;
 import org.ucsccaa.mms.models.ServiceResponse;
 import org.ucsccaa.mms.models.Status;
 import org.ucsccaa.mms.services.StaffService;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-
+@Api(tags = "STAFF RESTFUL API")
 @RestController
 @RequestMapping("/staff")
 public class StaffController {
     @Autowired
     private StaffService service;
 
+    @ApiOperation("create new Staff")
     @PostMapping
     public ServiceResponse<URI> addStaff(@RequestBody Staff staff, HttpServletRequest req) throws URISyntaxException {
         try {
@@ -37,6 +42,7 @@ public class StaffController {
         }
     }
 
+    @ApiOperation("update Staff by ID")
     @PutMapping
     public ServiceResponse<Staff> updateStaff(@RequestBody Staff staff) {
         Staff updatedStaff = null;
@@ -50,6 +56,7 @@ public class StaffController {
         return new ServiceResponse<>(updatedStaff);
     }
 
+    @ApiOperation("get Staff by ID")
     @GetMapping("/{id}") 
     public ServiceResponse<Staff> getStaff(@PathVariable Long id) {
         Staff staff = null;
@@ -63,6 +70,7 @@ public class StaffController {
         return new ServiceResponse<>(staff);
     }
 
+    @ApiOperation("get Staffs by Department")
     @GetMapping("/_dept")
     public ServiceResponse<List<Staff>> getStaffByDept(@RequestBody Staff staff) {
         try {
@@ -73,12 +81,14 @@ public class StaffController {
         }
     }
 
+    @ApiOperation("get all Staffs")
     @GetMapping()
     public ServiceResponse<List<Staff>> getAll() {
         List<Staff> allStaff = service.getAll();
         return new ServiceResponse<>(allStaff);
     }
     
+    @ApiOperation("delete Staff by ID")
     @DeleteMapping("/{id}")
     public ServiceResponse<Staff> deleteStaffById(@PathVariable Long id) {
         try {
