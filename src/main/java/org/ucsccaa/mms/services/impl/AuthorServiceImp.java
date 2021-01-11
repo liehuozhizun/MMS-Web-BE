@@ -1,4 +1,4 @@
-package org.ucsccaa.mms.services.Implements;
+package org.ucsccaa.mms.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -136,6 +136,16 @@ public class AuthorServiceImp implements AuthorService {
             return authorization;
         } else {
            throw new RuntimeException("Invalid argument(this level is null)");
+        }
+    }
+
+    public void addAuthority(String level, String authority) {
+        Authorization authorization = authorRepo.findByLevel(Authorization.LEVEL.valueOf(level));
+        if (authorization != null) {
+            authorization.getAuthorityList().add(Authorization.Authorities.valueOf(authority));
+            authorRepo.save(authorization);
+        } else {
+            throw new RuntimeException("Invalid argument(couldn't find this level)");
         }
     }
 

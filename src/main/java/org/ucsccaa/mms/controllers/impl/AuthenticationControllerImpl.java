@@ -8,9 +8,11 @@ import org.ucsccaa.mms.controllers.AuthenticationController;
 import org.ucsccaa.mms.domains.UserDetails;
 import org.ucsccaa.mms.models.ServiceResponse;
 import org.ucsccaa.mms.models.Status;
+import org.ucsccaa.mms.repositories.UserDetailsRepository;
 import org.ucsccaa.mms.services.impl.AuthenticationServiceImpl;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.URISyntaxException;
 
 @Api(tags = "Authentication RESTFUL API")
 @RestController
@@ -18,7 +20,8 @@ import javax.servlet.http.HttpServletRequest;
 public class AuthenticationControllerImpl implements AuthenticationController {
     @Autowired
     private AuthenticationServiceImpl authenticationServiceImpl;
-
+    @Autowired
+    private UserDetailsRepository userDetailsRepository;
     @ApiOperation("create new jwt")
     @Override
     @PostMapping
@@ -35,5 +38,12 @@ public class AuthenticationControllerImpl implements AuthenticationController {
             return  new ServiceResponse<>(Status.ERROR, e.getMessage());
         }
         return new ServiceResponse<>(token);
+    }
+    @Override
+    @PostMapping("/createUserDetail")
+    public ServiceResponse<UserDetails> createUserDetail(@RequestBody UserDetails userDetails, HttpServletRequest req) throws URISyntaxException {
+        System.out.println(userDetails);
+        userDetailsRepository.save(userDetails);
+        return new ServiceResponse<>(userDetails);
     }
 }

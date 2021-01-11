@@ -30,5 +30,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout()
                 .permitAll();
+
+        httpSecurity
+                //设置了<iframe>标签的“同源策略”，解决了上面出现的问题
+                .headers().frameOptions().sameOrigin();
+
+
     }
 }

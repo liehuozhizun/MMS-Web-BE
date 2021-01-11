@@ -12,8 +12,8 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-@Component
-@WebFilter(filterName = "AuthenticationFilter", urlPatterns = {"/member/*", "/staff/*"})
+
+@WebFilter(filterName = "AuthorizationFilter", urlPatterns = {"/members/*", "/staff/*"})
 @Order(value = 2)
 public class AuthorizationFilter implements Filter {
     @Autowired

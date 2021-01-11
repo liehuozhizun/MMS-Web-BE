@@ -33,6 +33,8 @@ public class StaffController {
             Long id = service.addStaff(staff);
             return new ServiceResponse<>(new URI(req.getRequestURL() + "/" + id));
         } catch (Exception e) {
+            System.out.println("asdfasdf");
+            e.printStackTrace();
             return new ServiceResponse<>(Status.ERROR, e.getMessage());
         }
     }

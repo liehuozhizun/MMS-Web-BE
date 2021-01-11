@@ -13,8 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@Component
-@WebFilter(filterName = "AuthenticationFilter", urlPatterns = {"/member/*", "/staff/*"})
+@WebFilter(filterName = "AuthenticationFilter", urlPatterns = {"/members/*", "/staff/*"})
 @Order(value = 1)
 public class AuthenticationFilter implements Filter {
     @Autowired

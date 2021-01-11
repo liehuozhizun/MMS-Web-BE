@@ -17,6 +17,7 @@ public class Staff {
     private String dept;
     private String position;
     @ManyToOne
+    @JoinColumn(name = "authorization_id", referencedColumnName = "id")
     private Authorization authorization;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="memId", referencedColumnName = "id")
