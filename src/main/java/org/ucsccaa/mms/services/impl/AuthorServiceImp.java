@@ -114,19 +114,19 @@ public class AuthorServiceImp implements AuthorService {
         }
 
     }
-    public Boolean checkAuthority(String level, String... authority) {
+    public Boolean checkAuthority(String level, String method, String uri) {
         Authorization authorization = new Authorization();
         Authorization.LEVEL authorLevel = Authorization.LEVEL.valueOf(level);
         authorization = authorRepo.findByLevel(authorLevel);
 
-        if (authority[0].equals("GET")) authority[0] = "READ";
-        if (authority[0].equals("PUT") || authority[0].equals("POST")) authority[0] = "ADD";
+        if (method.equals("GET")) method = "READ";
+        if (method.equals("PUT") || method.equals("POST")) method = "ADD";
 
         for(int i = 0; i < authorization.getAuthorityList().size(); i++) {
             String tempAuthority = authorization.getAuthorityList().get(i).toString();
-            if ((tempAuthority.contains(authority[0]) && tempAuthority.contains(authority[1]))
+            if ((tempAuthority.contains(method) && tempAuthority.contains(uri))
                 && (tempAuthority.contains("READ") && tempAuthority.contains("ALL"))) return true;
-            if (tempAuthority.contains(authority[0]) && tempAuthority.contains(authority[1])) return true;
+            if (tempAuthority.contains(method) && tempAuthority.contains(uri)) return true;
         }
         return false;
     }

@@ -5,5 +5,5 @@ import org.springframework.stereotype.Service;
 import org.ucsccaa.mms.repositories.AuthorizeRepository;
 
 public interface AuthorService {
-    Boolean checkAuthority(String level, String... authority);
+    Boolean checkAuthority(String level,String method,String uri);
 }
