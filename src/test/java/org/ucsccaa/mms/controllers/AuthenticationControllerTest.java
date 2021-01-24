@@ -87,8 +87,7 @@ public class AuthenticationControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("SUCCESS"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload.id").value(expectedUser.getId()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.userName").value(expectedUser.getUserName()))
-        ;
+                .andExpect(MockMvcResultMatchers.jsonPath("$.payload.userName").value(expectedUser.getUserName()));
     }
     @Test
     public void loginFailTest() throws Exception{
@@ -114,6 +113,4 @@ public class AuthenticationControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("ERROR"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errorMessage").value("Bad Request"));
     }
-
-
 }

@@ -42,7 +42,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .setSubject(userDetails.getUserName())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 3600000)) // 1h
-                .claim("level", level)
+                .claim("authorizationLevel", level)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
