@@ -52,13 +52,11 @@ public class AuthenticationControllerTest {
 
     @Test
     public void testCreateJwt() throws Exception {
-        when(authenticationService.generateJwtToken(any())).thenReturn("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMDM2MCIsImlhd" +
+        when(authenticationService.generateToken(any())).thenReturn("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMDM2MCIsImlhd" +
                 "CI6MTYwNjY4ODA5MCwiZXhwIjoxNjA2NjkxNjkwfQ.pXUooP4QWoePGYtXgKTdNkzm8zyi5ecqx_sC_ILigKo");
         String json = objectMapper.writeValueAsString(expectedUser);
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
-                .post("/authentications")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json);
+                .post("/authentications/test/test");
 
         mockMvc.perform(builder)
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
@@ -69,7 +67,7 @@ public class AuthenticationControllerTest {
 
     @Test
     public void testCreateJwt_exception() throws Exception {
-        doThrow(new RuntimeException()).when(authenticationService).authenticate(null);
+        doThrow(new RuntimeException()).when(authenticationService).authenticate(null, null);
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
                 .post("/authentications");
 

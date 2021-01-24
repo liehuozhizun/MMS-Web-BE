@@ -34,7 +34,8 @@ public class AuthenticationFilter implements Filter {
             return;
         }
         try {
-            if (authHead == null || authenticationService.validateJwtToken(authHead)) {
+            if (authHead == null || authenticationService.validateToken(authHead)) {
+
                 httpServletResponse.sendError(500, "INVALID TOKEN");
                 return;
             }

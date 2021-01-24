@@ -5,14 +5,12 @@ import org.ucsccaa.mms.domains.UserDetails;
 
 import java.util.Date;
 
-@Service
 public interface AuthenticationService {
     String getUserNameFromToken(String token);
-    String getAuthorityFromToken(String token);
     String getLevelFromToken(String token);
     UserDetails loadUserByUsername(String name);
-    String generateJwtToken(UserDetails userDetails);
+    String generateToken(UserDetails userDetails);
     Date getIssuedDateFromToken(String token);
-    Boolean validateJwtToken(String token);
-    void authenticate(UserDetails userDetails);
+    Boolean validateToken(String token);
+    UserDetails authenticate(String username, String password);
 }

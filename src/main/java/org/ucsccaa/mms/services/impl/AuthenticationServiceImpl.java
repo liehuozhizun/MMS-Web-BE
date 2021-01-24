@@ -3,7 +3,8 @@ package org.ucsccaa.mms.services.impl;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.data.domain.Example;
+import org.springframework.util.DigestUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.ucsccaa.mms.domains.UserDetails;
@@ -13,6 +14,7 @@ import org.ucsccaa.mms.services.AuthenticationService;
 import javax.annotation.PostConstruct;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -22,26 +24,25 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-    @Value("${jwt.secret")
-    private String secretKey = "secret";
+    @Value("${secretkey}")
+    private String secretKey;
 
     @PostConstruct
     public void init() {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
-
-
+    
     @Override
-    public String generateJwtToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails) {
         if (userDetails == null) {
             throw new RuntimeException("argument cannot be null");
         }
-        String authorities = userDetails.getStaff().getAuthorization().getLevel().toString();
+        String level = userDetails.getStaff().getAuthorization().getLevel().toString();
         return Jwts.builder()
                 .setSubject(userDetails.getUserName())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 3600000)) // 1h
-                .claim("authority", authorities)
+                .claim("level", level)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
@@ -55,44 +56,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public String getAuthorityFromToken(String token) {
-        if (token == null) {
-            throw new RuntimeException("argument cannot be null");
-        }
-        String userName;
-        try {
-            userName = getUserNameFromToken(token);
-        } catch (Exception e) {
-            throw e;
-        }
-        UserDetails userDetails;
-        try {
-            userDetails = loadUserByUsername(userName);
-        } catch (Exception e) {
-            throw e;
-        }
-        String authority = userDetails.getStaff().getAuthorization().getAuthorityList().toString();
-        return authority;
-    }
-
-    @Override
     public String getLevelFromToken(String token) {
         if (token == null) {
-            throw new RuntimeException("argument cannot be null");
+            return null;
         }
-        String userName;
-        try {
-            userName = getUserNameFromToken(token);
-        } catch (Exception e) {
-            throw e;
-        }
-        UserDetails userDetails;
-        try {
-            userDetails = loadUserByUsername(userName);
-        } catch (Exception e) {
-            throw e;
-        }
-        String level = userDetails.getStaff().getAuthorization().getLevel().toString();
+        String level = (String) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("authority");
         return level;
     }
 
@@ -106,15 +74,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (name == null) {
             throw new RuntimeException("argument cannot be null");
         }
-        UserDetails userDetails = userDetailsRepository.findByUserName(name);
-        if (userDetails == null) {
+        Optional<UserDetails> userDetails = userDetailsRepository.findByUserName(name);
+        if (!userDetails.isPresent()) {
             throw new UsernameNotFoundException("user not found");
         }
-        return userDetails;
+        return userDetails.get();
     }
 
     @Override
-    public Boolean validateJwtToken(String token) {
+    public Boolean validateToken(String token) {
         String userName;
         try {
             userName = getUserNameFromToken(token);
@@ -139,15 +107,26 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public void authenticate(UserDetails userDetails) {
+    public UserDetails authenticate(String username, String password) {
+        if(username == null) {
+            throw new RuntimeException("argument cannot be null");
+        }
+        Optional<UserDetails> userDetails = userDetailsRepository.findByUserName(username);
+        if(!userDetails.isPresent()){
+            throw new RuntimeException("user not found");
+        } else if(!encoder.matches(password, userDetails.get().getPassword())) {
+            throw new RuntimeException("wrong password");
+        }
+        return userDetails.get();
+    }
+
+    public Long addUserDetail(UserDetails userDetails) {
         if(userDetails == null) {
             throw new RuntimeException("argument cannot be null");
         }
-        UserDetails userDetails1 = userDetailsRepository.findByUserName(userDetails.getUserName());
-        if (userDetails1 == null) {
-            throw new RuntimeException("user not found");
-        } else if (!encoder.matches(userDetails.getPassword(), userDetails1.getPassword())) {
-            throw new RuntimeException("wrong password");
+        if(userDetailsRepository.exists(Example.of(userDetails))) {
+            throw new RuntimeException("user already exists");
         }
+        return userDetailsRepository.save(userDetails).getId();
     }
 }

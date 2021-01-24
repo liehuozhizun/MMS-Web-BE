@@ -5,32 +5,39 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Authorization {
-
+    // use set
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     private LEVEL level;
-    @Column(name = "authority_list", columnDefinition = "LONGVARBINARY")
-    private ArrayList<Authorities> authorityList;
+    @ElementCollection
+    //list instead of arraylist
+    private Set<Authority_GET> authoritySet_GET;
+    @ElementCollection
+    //list instead of arraylist
+    private Set<Authority_PUT> authoritySet_PUT;
+    @ElementCollection
+    //list instead of arraylist
+    private Set<Authority_POST> authoritySet_POST;
+    @ElementCollection
+    //list instead of arraylist
+    private Set<Authority_DELETE> authoritySet_DELETE;
 
-   public enum LEVEL{
+
+    public enum LEVEL {
         LEVEL_1,
         LEVEL_2,
         LEVEL_3,
         LEVEL_4,
         LEVEL_5
     }
-    public enum Authorities {
+
+    public enum Authority_GET {
         // LEVEL 1
         READ_STAFF_DEPT,
         READ_STAFF_POSITION,
@@ -39,22 +46,43 @@ public class Authorization {
         READ_MEMBER_EMAIL,
         READ_MEMBER_DEGREE,
         // LEVEL 3
-        ADD_MEMBER,
-        DELETE_MEMBER,
-        ADD_OPT,
-        DELETE_OPT,
         READ_OPT_ALL,
-        ADD_ORDERS,
-        DELETE_ORDERS,
         READ_ORDERS_ALL,
         // LEVEL 4
         READ_MEMBER_ALL,
         READ_STAFF_ALL,
         // LEVEL 5
-        ADD_STAFF,
-        DELETE_STAFF,
-        ADD_RECORD,
-        DELETE_RECORD,
         READ_RECORD_ALL,
+    }
+
+    public enum Authority_PUT {
+        // LEVEL 3
+        EDIT_MEMBER,
+        EDIT_OPT,
+        EDIT_ORDERS,
+        // LEVEL 5
+        EDIT_STAFF,
+        EDIT_RECORD
+    }
+
+    public enum Authority_POST {
+        // LEVEL 3
+        ADD_MEMBER,
+        ADD_OPT,
+        ADD_ORDERS,
+        // LEVEL 5
+        ADD_STAFF,
+        ADD_RECORD
+
+    }
+
+    public enum Authority_DELETE {
+        //LEVEL 3
+        DELETE_MEMBER,
+        DELETE_OPT,
+        DELETE_ORDERS,
+        //LEVEL 5
+        DELETE_STAFF,
+        DELETE_RECORD
     }
 }

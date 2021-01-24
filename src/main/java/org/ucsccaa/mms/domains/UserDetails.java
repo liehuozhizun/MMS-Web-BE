@@ -11,6 +11,7 @@ import java.util.Random;
 @Entity
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,8 +24,8 @@ public class UserDetails {
     @JoinColumn(name = "staff_id", referencedColumnName = "id")
     private Staff staff;
 
-    public UserDetails() {
-        userName = String.valueOf((int)((Math.random() * 9+1) * (Math.pow(10, 4))));
-        password = String.valueOf((int)((Math.random() * 9+1) * (Math.pow(10, 7))));
+    static void defaultUserDetails(UserDetails userDetails) {
+        userDetails.setUserName(String.valueOf((int)((Math.random() * 9+1) * (Math.pow(10, 4)))));
+        userDetails.setPassword(String.valueOf((int)((Math.random() * 9+1) * (Math.pow(10, 7)))));
     }
 }
