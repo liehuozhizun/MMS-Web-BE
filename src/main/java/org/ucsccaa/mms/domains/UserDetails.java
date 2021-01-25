@@ -20,6 +20,8 @@ public class UserDetails {
     private String userName;
     @Column(unique = true)
     private String password;
+    @Column
+    private byte[] salt;
     @ManyToOne(cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "staff_id", referencedColumnName = "id")
     private Staff staff;

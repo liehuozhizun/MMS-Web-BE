@@ -4,17 +4,19 @@ import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
-import org.springframework.util.DigestUtils;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.ucsccaa.mms.domains.UserDetails;
 import org.ucsccaa.mms.repositories.UserDetailsRepository;
 import org.ucsccaa.mms.services.AuthenticationService;
 
 import javax.annotation.PostConstruct;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Optional;
+import java.security.NoSuchAlgorithmException;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -22,9 +24,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Autowired
     private UserDetailsRepository userDetailsRepository;
 
-    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-
-    @Value("${secretkey}")
+    @Value("${secretKey}")
     private String secretKey;
 
     @PostConstruct
@@ -43,7 +43,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 3600000)) // 1h
                 .claim("authorizationLevel", level)
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .signWith(SignatureAlgorithm.HS512, secretKey)
                 .compact();
     }
 
@@ -76,7 +76,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         Optional<UserDetails> userDetails = userDetailsRepository.findByUserName(name);
         if (!userDetails.isPresent()) {
-            throw new UsernameNotFoundException("user not found");
+            throw new RuntimeException("user not found");
         }
         return userDetails.get();
     }
@@ -108,13 +108,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public UserDetails authenticate(String username, String password) {
-        if(username == null) {
+        if(username == null || password == null) {
             throw new RuntimeException("argument cannot be null");
         }
         Optional<UserDetails> userDetails = userDetailsRepository.findByUserName(username);
         if(!userDetails.isPresent()){
             throw new RuntimeException("user not found");
-        } else if(!encoder.matches(password, userDetails.get().getPassword())) {
+        }
+        byte[] salt = userDetails.get().getSalt();
+        System.out.println("expectedUser salt3: " + salt.toString());
+        String loginPassword = encrypt(password, salt);
+        if(!loginPassword.equals(userDetails.get().getPassword()) ) {
+            System.out.println("original password4: " + password);
+            System.out.println("authenticate password5: " + loginPassword);
             throw new RuntimeException("wrong password");
         }
         return userDetails.get();
@@ -127,6 +133,42 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if(userDetailsRepository.exists(Example.of(userDetails))) {
             throw new RuntimeException("user already exists");
         }
+        byte[] salt;
+        salt = getSalt();
+        String encryptedPassword;
+        try {
+            encryptedPassword = encrypt(userDetails.getPassword(), salt);
+        } catch (Exception e) {
+            throw new RuntimeException("fail to encrypt password");
+        }
+        userDetails.setPassword(encryptedPassword);
+        userDetails.setSalt(salt);
         return userDetailsRepository.save(userDetails).getId();
+    }
+
+    public String encrypt(String password, byte[] salt) {
+        if (password == null || salt == null) {
+            throw new RuntimeException("argument cannot be null");
+        }
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-512");
+            md.update(salt);
+            byte[] messageDigest = md.digest(password.getBytes(StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < messageDigest.length; i++) {
+                sb.append(Integer.toString((messageDigest[i] & 0xff) + 0x100, 16).substring(1));
+            }
+            String hashText = sb.toString();
+            return hashText;
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public byte[] getSalt() {
+        SecureRandom secureRandom = new SecureRandom();
+        byte[] salt = new byte[16];
+        secureRandom.nextBytes(salt);
+        return salt;
     }
 }

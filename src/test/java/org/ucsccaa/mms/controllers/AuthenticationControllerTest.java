@@ -41,7 +41,7 @@ public class AuthenticationControllerTest {
             "test","test","test","test","test","test","test","test",
             "test","test","test",true);
     private final Staff staff = new Staff(1L, "test", "test", authorization, member);
-    private final UserDetails expectedUser = new UserDetails(1L, "test", "test", staff);
+    private final UserDetails expectedUser = new UserDetails(1L, "test", "test", "salt".getBytes(), staff);
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final String token = "test_token";
     @Before

@@ -2,6 +2,7 @@ package org.ucsccaa.mms.services;
 
 import static org.mockito.Mockito.when;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 import org.junit.Assert;
@@ -10,7 +11,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.ucsccaa.mms.domains.Member;
 import org.ucsccaa.mms.domains.Staff;
 import org.ucsccaa.mms.domains.UserDetails;
@@ -38,17 +38,16 @@ public class AuthenticationServiceTest {
             "test","test","test","test","test","test","test","test",
             "test","test","test",true);
     private final Staff staff = new Staff(1L, "test", "test", authorization, member);
-    private final UserDetails expectedUser = new UserDetails(1L, "test", "test", staff);
-    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    private final UserDetails expectedUser = new UserDetails(1L, "test", "test","[B@ebaa6cb".getBytes() ,staff);
 
     @Test
-    public void testGenerateJwtToken() {
+    public void testGenerateToken() {
         String token = authenticationService.generateToken(expectedUser);
         Assert.assertNotNull(token);
     }
 
     @Test(expected = RuntimeException.class)
-    public void testGenerateJwtToken_exception() {
+    public void testGenerateToken_exception() {
         authenticationService.generateToken(null);
     }
 
@@ -104,7 +103,7 @@ public class AuthenticationServiceTest {
     }
 
     @Test
-    public void testValidateJwtToken() {
+    public void testValidateToken() {
         when(userDetailsRepository.findByUserName("test")).thenReturn(Optional.of(expectedUser));
         String token = authenticationService.generateToken(expectedUser);
         Boolean test = authenticationService.validateToken(token);
@@ -112,20 +111,56 @@ public class AuthenticationServiceTest {
     }
 
     @Test(expected = RuntimeException.class)
-    public void testValidateJwtToken_exception() {
+    public void testValidateToken_null_exception() {
         authenticationService.validateToken(null);
     }
 
     @Test
+    public void testEncrypt() {
+        String encrypt = authenticationService.encrypt("test", "[B@ebaa6cb".getBytes());
+        Assert.assertEquals("99ef311a786a4cc6480356fad6a6d075e536ee9799af6186af65d5cf1796aba61b273c9d0c453a8c5376d34119bc7f0be994a16ef5d5ee692180b17938498b69", encrypt);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testEncrypt_null_exception() {
+        authenticationService.encrypt(null, null);
+    }
+
+    @Test
     public void testAuthenticate() {
-        UserDetails testUser = new UserDetails(1L, "test", "test", staff);
-        expectedUser.setPassword(encoder.encode(expectedUser.getPassword()));
+        expectedUser.setPassword(authenticationService.encrypt(expectedUser.getPassword(), expectedUser.getSalt()));
         when(userDetailsRepository.findByUserName("test")).thenReturn(Optional.of(expectedUser));
+        UserDetails user = authenticationService.authenticate("test", "test");
+        Assert.assertEquals(expectedUser, user);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testAuthenticate_null_exception() {
+        authenticationService.authenticate(null, null);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testAuthenticate_userNotFound_exception() {
+        when(userDetailsRepository.findByUserName("test")).thenReturn(Optional.empty());
         authenticationService.authenticate("test", "test");
     }
 
     @Test(expected = RuntimeException.class)
-    public void testAuthenticate_exception() {
-        authenticationService.authenticate(null, null);
+    public void testAuthenticate_wrongPassword_exception() {
+        expectedUser.setPassword(authenticationService.encrypt(expectedUser.getPassword(), expectedUser.getSalt()));
+        when(userDetailsRepository.findByUserName("test")).thenReturn(Optional.of(expectedUser));
+        authenticationService.authenticate("test", "testtest");
+    }
+
+    @Test
+    public void testAddUserDetail() {
+        when(userDetailsRepository.save(expectedUser)).thenReturn(expectedUser);
+        Long id = authenticationService.addUserDetail(expectedUser);
+        Assert.assertEquals(expectedUser.getId(), id);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testAddUserDetail_null_exception() {
+        authenticationService.addUserDetail(null);
     }
 }
