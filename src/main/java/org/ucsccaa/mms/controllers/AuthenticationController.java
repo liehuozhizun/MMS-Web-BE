@@ -18,19 +18,22 @@ public class AuthenticationController {
     private AuthenticationService authenticationService;
     @PostMapping("authenticate")
     public ServiceResponse<String> authenticate(@RequestBody Map<String,Object>param){
-        UserDetails newUser = new UserDetails();
-        newUser.setPassword((String) param.get("password"));
-        newUser.setUserName((String) param.get("username"));
+//        newUser.setPassword((String) param.get("password"));
+//        newUser.setUserName((String) param.get("username"));
+       UserDetails newUser = authenticationService.loadUserByUsername((String) param.get("username"));
+
         try {
             String token = authenticationService.generateToken(newUser);
             return new ServiceResponse<>(token);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ServiceResponse<>(Status.ERROR, "Bad Request");
         }
     }
     @GetMapping("login")
     public ServiceResponse<UserDetails> getUserInfo(HttpServletRequest request){
-        String token = request.getHeader("authorization");
+        String token = request.getHeader("authorization").substring(6);
+        System.out.println(token);
         try {
             Boolean result = authenticationService.validateToken(token);
 
@@ -42,6 +45,7 @@ public class AuthenticationController {
                 return new ServiceResponse<>(Status.ERROR,"Unauthorized");
             }
         } catch (Exception e) {
+            e.printStackTrace();
             return new ServiceResponse<>(Status.ERROR,"Bad Request");
         }
     }

@@ -13,6 +13,7 @@ import org.ucsccaa.mms.services.AuthorService;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("authorization")
@@ -21,8 +22,10 @@ public class AuthorizationController {
     private AuthorService authorService;
     
     @PostMapping
-    public ServiceResponse<URI> addAuthority(@RequestBody String level, @RequestBody String authority, HttpServletRequest req) throws URISyntaxException {
+    public ServiceResponse<URI> addAuthority(@RequestBody Map<String,Object> param, HttpServletRequest req) throws URISyntaxException {
         try {
+            String level = (String) param.get("level");
+            String authority = (String) param.get("authority");
             authorService.addAuthority(Authorization.LEVEL.valueOf(level), authority);
             return new ServiceResponse<>(new URI(req.getRequestURI() + "/" + level + "/" + authority));
         } catch (Exception e) {

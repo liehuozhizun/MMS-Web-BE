@@ -29,15 +29,16 @@ public class AuthorizationFilter implements Filter {
             chain.doFilter(request,response);
             return;
         }
-        String level = authenticationService.loadUserByUsername(authenticationService.getUserNameFromToken(token)).getStaff().getAuthorization().getLevel().toString();
-        String method = ((HttpServletRequest) request).getMethod().toUpperCase();
-        String uri = ((HttpServletRequest) request).getRequestURI().substring(1).toUpperCase();
         try {
+            String level = authenticationService.loadUserByUsername(authenticationService.getUserNameFromToken(token.substring(6))).getStaff().getAuthorization().getLevel().toString();
+            String method = ((HttpServletRequest) request).getMethod().toUpperCase();
+            String uri = ((HttpServletRequest) request).getRequestURI().substring(1).toUpperCase().split("/")[0];
+
             if (!authorService.checkAuthority(level,method,uri)){
                 ((HttpServletResponse)response).sendError(401, "Unauthorized");
                 return;
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             ((HttpServletResponse)response).sendError(500, "INVAILD TOKEN");
             return;
         }

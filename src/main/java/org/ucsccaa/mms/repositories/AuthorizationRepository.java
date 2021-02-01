@@ -6,6 +6,6 @@ import org.ucsccaa.mms.domains.Authorization;
 
 
 @Repository
-public interface AuthorizeRepository extends JpaRepository<Authorization, Authorization.LEVEL> {
+public interface AuthorizationRepository extends JpaRepository<Authorization, Long> {
     Authorization findByLevel(Authorization.LEVEL level);
 }

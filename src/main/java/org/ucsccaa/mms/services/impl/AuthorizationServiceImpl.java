@@ -3,7 +3,7 @@ package org.ucsccaa.mms.services.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.ucsccaa.mms.domains.Authorization;
-import org.ucsccaa.mms.repositories.AuthorizeRepository;
+import org.ucsccaa.mms.repositories.AuthorizationRepository;
 import org.ucsccaa.mms.services.AuthorService;
 
 import javax.annotation.PostConstruct;
@@ -13,7 +13,7 @@ import java.util.*;
 @Service
 public class AuthorizationServiceImpl implements AuthorService {
     @Autowired
-    private AuthorizeRepository authorizationRepo;
+    private AuthorizationRepository authorizationRepo;
 
     private Set<Authorization.Authority_POST> authoritiesPost_1 = new HashSet<>();
     private Set<Authorization.Authority_GET> authoritiesGet_1 = new HashSet<>();
@@ -46,9 +46,8 @@ public class AuthorizationServiceImpl implements AuthorService {
     private Hashtable<Authorization.LEVEL, Set<Authorization.Authority_GET>> getAuthoritiesTable = new Hashtable<>();
 
     @PostConstruct
-    private void initializeAuthor() {
+    public void initializor() {
         Authorization authorization1 = authorizationRepo.findByLevel(Authorization.LEVEL.LEVEL_1);
-        System.out.println("post constructor");
         if(authorization1 == null) {
             Authorization tempAuthorization = new Authorization();
             authoritiesGet_1.add(Authorization.Authority_GET.READ_STAFF_DEPT);
@@ -195,7 +194,6 @@ public class AuthorizationServiceImpl implements AuthorService {
         getAuthoritiesTable.put(Authorization.LEVEL.LEVEL_3, authoritiesGet_3);
         getAuthoritiesTable.put(Authorization.LEVEL.LEVEL_4, authoritiesGet_4);
         getAuthoritiesTable.put(Authorization.LEVEL.LEVEL_5, authoritiesGet_5);
-        System.out.println("get element: " + authoritiesGet_1.toString());
         putAuthoritiesTable.put(Authorization.LEVEL.LEVEL_1, authoritiesPut_1);
         putAuthoritiesTable.put(Authorization.LEVEL.LEVEL_2, authoritiesPut_2);
         putAuthoritiesTable.put(Authorization.LEVEL.LEVEL_3, authoritiesPut_3);
@@ -220,7 +218,6 @@ public class AuthorizationServiceImpl implements AuthorService {
         if (method.equals("GET")) {
             authorization.setAuthoritySet_GET(getAuthoritiesTable.get(Authorization.LEVEL.valueOf(level)));
             for(Authorization.Authority_GET authorityTempElement : authorization.getAuthoritySet_GET()) {
-                System.out.println("current element is: " + authorityTempElement);
                 if(authorityTempElement.toString().contains(uri)) {
                     return true;
                 }
@@ -266,13 +263,13 @@ public class AuthorizationServiceImpl implements AuthorService {
         Authorization authorization = authorizationRepo.findByLevel(level);
         if (authorization != null) {
             if (authority.contains("READ") || authority.contains("GET")) {
-                authorization.getAuthoritySet_GET().add(Authorization.Authority_GET.valueOf(authority.toUpperCase()));
+                authorization.getAuthoritySet_GET().add(Authorization.Authority_GET.valueOf(authority.toUpperCase().trim()));
             } else if (authority.contains("EDIT") || authority.contains("PUT")) {
-                authorization.getAuthoritySet_PUT().add(Authorization.Authority_PUT.valueOf(authority.toUpperCase()));
+                authorization.getAuthoritySet_PUT().add(Authorization.Authority_PUT.valueOf(authority.toUpperCase().trim()));
             } else if (authority.contains("ADD") || authority.contains("POST")) {
-                authorization.getAuthoritySet_POST().add(Authorization.Authority_POST.valueOf(authority.toUpperCase()));
+                authorization.getAuthoritySet_POST().add(Authorization.Authority_POST.valueOf(authority.toUpperCase().trim()));
             } else {
-                authorization.getAuthoritySet_DELETE().add(Authorization.Authority_DELETE.valueOf(authority.toUpperCase()));
+                authorization.getAuthoritySet_DELETE().add(Authorization.Authority_DELETE.valueOf(authority.toUpperCase().trim()));
             }
             authorizationRepo.save(authorization);
         } else {

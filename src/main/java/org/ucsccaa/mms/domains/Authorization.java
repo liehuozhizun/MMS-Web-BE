@@ -12,20 +12,18 @@ import java.util.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Authorization {
-    // use set
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
+    @Enumerated(EnumType.STRING)
     private LEVEL level;
     @ElementCollection
-    //list instead of arraylist
     private Set<Authority_GET> authoritySet_GET;
     @ElementCollection
-    //list instead of arraylist
     private Set<Authority_PUT> authoritySet_PUT;
     @ElementCollection
-    //list instead of arraylist
     private Set<Authority_POST> authoritySet_POST;
     @ElementCollection
-    //list instead of arraylist
     private Set<Authority_DELETE> authoritySet_DELETE;
 
 

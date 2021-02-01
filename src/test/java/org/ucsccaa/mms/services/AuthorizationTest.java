@@ -8,10 +8,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.ucsccaa.mms.domains.Authorization;
-import org.ucsccaa.mms.repositories.AuthorizeRepository;
+import org.ucsccaa.mms.repositories.AuthorizationRepository;
 import org.ucsccaa.mms.services.impl.AuthorizationServiceImpl;
 
 import java.util.HashSet;
@@ -20,7 +18,7 @@ import java.util.Set;
 @RunWith(MockitoJUnitRunner.class)
 public class AuthorizationTest {
     @Mock
-    private AuthorizeRepository authorizeRepository;
+    private AuthorizationRepository authorizationRepository;
     @InjectMocks
     private AuthorizationServiceImpl authorService;
 
@@ -31,21 +29,37 @@ public class AuthorizationTest {
             add(Authorization.Authority_GET.READ_STAFF_POSITION);
         }
     };
-    private Authorization expectedAuthor = new Authorization(level, authority_gets, null, null, null);
+    private final Set<Authorization.Authority_PUT> authority_puts = new HashSet<Authorization.Authority_PUT>() {
+        {
+            add(Authorization.Authority_PUT.EDIT_STAFF);
+        }
+    };
+    private final Set<Authorization.Authority_POST> authority_posts = new HashSet<Authorization.Authority_POST>() {
+        {
+            add(Authorization.Authority_POST.ADD_STAFF);
+        }
+    };
+    private final Set<Authorization.Authority_DELETE> authority_deletes = new HashSet<Authorization.Authority_DELETE>() {
+        {
+            add(Authorization.Authority_DELETE.DELETE_STAFF);
+        }
+    };
+    private Authorization expectedAuthor = new Authorization(1L, level, authority_gets, authority_puts, authority_posts, authority_deletes);
     private final String stringLevel = level.toString();
     private final String checkMethod = "GET";
     private final String checkURI = "STAFF";
     private final Boolean expectedResult = true;
 
+    private Authorization expectedAddAuthor = expectedAuthor;
+
     @Before
     public void configuration() {
-        Mockito.when(authorizeRepository.findByLevel(Mockito.eq(level))).thenReturn(expectedAuthor);
+        Mockito.when(authorizationRepository.findByLevel(Mockito.eq(level))).thenReturn(expectedAuthor);
     }
-
 
     @Test
     public void testCheckAuthority() {
-        ReflectionTestUtils.invokeMethod(AuthorizationServiceImpl.class, "initializeAuthor");
+        authorService.initializor();
         Boolean actualResult = authorService.checkAuthority(stringLevel, checkMethod, checkURI);
         Assert.assertEquals(expectedResult, actualResult);
     }
@@ -58,5 +72,22 @@ public class AuthorizationTest {
     @Test(expected = RuntimeException.class)
     public void testGetByLevel_invalidArgument() {
         authorService.getByLevel(null);
+    }
+
+    @Test
+    public void testAddAuthority() {
+        expectedAddAuthor.getAuthoritySet_GET().add(Authorization.Authority_GET.valueOf("READ_MEMBER_NAME"));
+        Mockito.when(authorizationRepository.save(Mockito.eq(expectedAddAuthor))).thenReturn(expectedAddAuthor);
+        authorService.addAuthority(Authorization.LEVEL.LEVEL_1, "READ_MEMBER_NAME");
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testAddAuthority_nullLevel() {
+        authorService.addAuthority(null, "READ_MEMBER_NAME");
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testAddAuthority_invalidLevel() {
+        authorService.addAuthority(Authorization.LEVEL.valueOf("LEVEL_6"), "READ_MEMBER_NAME");
     }
 }
