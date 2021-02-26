@@ -10,6 +10,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.ucsccaa.mms.repositories.OPTRepository;
 import org.ucsccaa.mms.domains.OPT;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
@@ -21,6 +23,22 @@ public class OPTServiceTest {
 
     @InjectMocks
     private OPTService optService;
+
+    @Test
+    public void createOPTTest() {
+        OPT opt = new OPT();
+        opt.setId(1L);
+        opt.setStatus("test");
+        opt.setCardNumber("test");
+        when(optRepository.save(eq(opt))).thenReturn(opt);
+        Long id = optService.createOPT(opt);
+        Assert.assertEquals(opt.getId(), id);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void createOPTNullTest() {
+        optService.createOPT(null);
+    }
 
     @Test
     public void findByIDTest() {
@@ -84,6 +102,15 @@ public class OPTServiceTest {
 //        optService.updateOPT(null);
     }
 
+    @Test
+    public void deleteOPTTest() {
+        OPT opt = new OPT();
+        opt.setId(1L);
+        opt.setStatus("test");
+        opt.setCardNumber("test");
+        optService.deleteOPT(1L);
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void deleteByIDNULLArgTest() {
         optService.deleteOPT(null);
@@ -107,5 +134,15 @@ public class OPTServiceTest {
         optService.createOPT(null);
     }
 
-
+    @Test
+    public void listAllTest() {
+        OPT optExpect = new OPT();
+        optExpect.setId((long) 1);
+        optExpect.setStatus("STATUS");
+        optExpect.setCardNumber("TEST-CARD-ID");
+        List<OPT> test = new ArrayList(){{add(optExpect);}};
+        when(optRepository.findAll()).thenReturn(test);
+        List<OPT> actual = optService.listAll();
+        Assert.assertEquals(test.get(0).getId(), actual.get(0).getId());
+    }
 }

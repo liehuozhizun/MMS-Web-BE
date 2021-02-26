@@ -83,6 +83,13 @@ public class MemberServiceTest {
         memberService.updateMember(null);
     }
 
+    @Test
+    public void testUpdateMember_MemberNotExist() {
+        when(memberRepository.existsById(1L)).thenReturn(false);
+        Optional<Member> test = memberService.updateMember(expectedMember);
+        Assert.assertEquals(Optional.empty(), test);
+    }
+
     @Test(expected = RuntimeException.class)
     public void testUpdateMember_exception() {
         when(memberRepository.existsById(1L)).thenReturn(true);
@@ -195,5 +202,17 @@ public class MemberServiceTest {
         when(memberRepository.existsById(1L)).thenReturn(true);
         memberService.deleteMember(1L);
         verify(memberRepository, times(1)).deleteById(1L);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testDeleteMember_NullException() {
+        memberService.deleteMember(null);
+    }
+
+    @Test
+    public void testDeleteMember_IdNotExist() {
+        when(memberRepository.existsById(1L)).thenReturn(false);
+        boolean test = memberService.deleteMember(1L);
+        Assert.assertEquals(false, test);
     }
 }

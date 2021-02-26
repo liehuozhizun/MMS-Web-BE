@@ -4,6 +4,10 @@ import org.springframework.web.bind.annotation.*;
 import org.ucsccaa.mms.models.ServiceResponse;
 import org.ucsccaa.mms.models.Status;
 import org.ucsccaa.mms.services.MemberService;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 import org.ucsccaa.mms.domains.Member;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +18,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
+@Api(tags = "MEMBER RESTFUL API")
 @RestController
 @RequestMapping("/members")
 public class MemberController {
@@ -21,6 +26,7 @@ public class MemberController {
     @Autowired
     private MemberService memberService;
 
+    @ApiOperation("create new Member")
     @PostMapping
     public ServiceResponse<URI> addMember(@RequestBody Member member, HttpServletRequest req) throws URISyntaxException {
         Long id;
@@ -32,6 +38,7 @@ public class MemberController {
         }
     }
 
+    @ApiOperation("update Member by ID")
     @PutMapping
     public ServiceResponse<Member> updateMember(@RequestBody Member member) throws URISyntaxException {
         Optional<Member> newMember;
@@ -46,6 +53,7 @@ public class MemberController {
         return new ServiceResponse<>(newMember.get());
     }
 
+    @ApiOperation("delete Member by ID")
     @DeleteMapping("/{id}")
     public ServiceResponse<Object> deleteMember(@PathVariable Long id) {
         boolean delete;
@@ -60,8 +68,9 @@ public class MemberController {
         return new ServiceResponse<>();
     }
 
+    @ApiOperation("get Member by ID")
     @GetMapping("/id/{id}")
-    public ServiceResponse<Optional<Member>> getMember(@PathVariable("id") Long id) {
+    public ServiceResponse<Member> getMember(@PathVariable("id") Long id) {
         Optional<Member> member;
         try {
             member = memberService.getMember(id);
@@ -71,11 +80,12 @@ public class MemberController {
         } catch (Exception e) {
             return new ServiceResponse<>(Status.ERROR, e.getMessage());
         }
-        return new ServiceResponse<Optional<Member>>(member);
+        return new ServiceResponse<Member>(member.get());
     }
 
+    @ApiOperation("get Member by email")
     @GetMapping("/email/{email}")
-    public ServiceResponse<Optional<Member>> getMemberByEmail(@PathVariable("email") String email) {
+    public ServiceResponse<Member> getMemberByEmail(@PathVariable("email") String email) {
         Optional<Member> member;
         try {
             member = memberService.getMemberByEmail(email);
@@ -85,11 +95,12 @@ public class MemberController {
         } catch (Exception e) {
             return new ServiceResponse<>(Status.ERROR, e.getMessage());
         }
-        return new ServiceResponse<Optional<Member>>(member);
+        return new ServiceResponse<Member>(member.get());
     }
 
+    @ApiOperation("get Member by phone number")
     @GetMapping("/phone/{phone}")
-    public ServiceResponse<Optional<Member>> getMemberByPhone(@PathVariable("phone") String phone) {
+    public ServiceResponse<Member> getMemberByPhone(@PathVariable("phone") String phone) {
         Optional<Member> member;
         try {
             member = memberService.getMemberByPhone(phone);
@@ -99,11 +110,12 @@ public class MemberController {
         } catch (Exception e) {
             return new ServiceResponse<>(Status.ERROR, e.getMessage());
         }
-        return new ServiceResponse<Optional<Member>>(member);
+        return new ServiceResponse<Member>(member.get());
     }
 
+    @ApiOperation("get Member by Wechat ID")
     @GetMapping("/wechat/{wechat}")
-    public ServiceResponse<Optional<Member>> getMemberByWechat(@PathVariable("wechat") String wechat) {
+    public ServiceResponse<Member> getMemberByWechat(@PathVariable("wechat") String wechat) {
         Optional<Member> member;
         try {
             member = memberService.getMemberByWechat(wechat);
@@ -113,11 +125,12 @@ public class MemberController {
         } catch (Exception e) {
             return new ServiceResponse<>(Status.ERROR, e.getMessage());
         }
-        return new ServiceResponse<Optional<Member>>(member);
+        return new ServiceResponse<Member>(member.get());
     }
 
+    @ApiOperation("get Member by student ID")
     @GetMapping("/stdid/{stdid}")
-    public ServiceResponse<Optional<Member>> getMemberByStdId(@PathVariable("stdid") String stdId) {
+    public ServiceResponse<Member> getMemberByStdId(@PathVariable("stdid") String stdId) {
         Optional<Member> member;
         try {
             member = memberService.getMemberByStdId(stdId);
@@ -127,9 +140,10 @@ public class MemberController {
         } catch (Exception e) {
             return new ServiceResponse<>(Status.ERROR, e.getMessage());
         }
-        return new ServiceResponse<Optional<Member>>(member);
+        return new ServiceResponse<Member>(member.get());
     }
 
+    @ApiOperation("get all Members")
     @GetMapping("/")
     public ServiceResponse<List<Member>> getAll() {
         return new ServiceResponse<>(memberService.findAll());
