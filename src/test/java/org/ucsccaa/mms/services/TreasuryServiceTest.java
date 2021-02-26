@@ -3,6 +3,8 @@ package org.ucsccaa.mms.services;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.Assert;
@@ -11,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.ucsccaa.mms.domains.Staff;
 import org.ucsccaa.mms.domains.Treasury;
 import org.ucsccaa.mms.repositories.StaffRepository;
 import org.ucsccaa.mms.repositories.TreasuryRepository;
@@ -41,6 +44,11 @@ public class TreasuryServiceTest {
         treasuryService.addTreasury(null);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void addTreasury_InvalidIdArgument() {
+        Treasury expectedTreasury = new Treasury(2l, null, null, 100.00, "test");
+        Long id = treasuryService.addTreasury(expectedTreasury);
+    }
     @Test
     public void updateTreasuryTest() {
         Treasury expectedTreasury = new Treasury(null, null, null, 100.00, "beforeUpdate");
@@ -92,10 +100,28 @@ public class TreasuryServiceTest {
     }
 
     @Test
-    public void deleteTreasuryNonExistingEntityTest() {
+    public void deleteTreasuryTest() {
         when(treasuryRepository.existsById(any())).thenReturn(false);
         Boolean result = treasuryService.deleteTreasury(1L);
         Assert.assertFalse(result);
+    }
+    @Test
+    public void deleteTreasuryNonExistingEntityTest() {
+        when(treasuryRepository.existsById(any())).thenReturn(true);
+        Boolean result = treasuryService.deleteTreasury(1L);
+        Assert.assertTrue(result);
+    }
+
+    @Test
+    public void getTreasuryByStaffTest() {
+        Staff expectedStaff = new Staff();
+        expectedStaff.setId(1l);
+        Treasury expectedTreasury = new Treasury(null, null, null, 100.00, "beforeUpdate");
+        List<Treasury> expectedTreasuries = new ArrayList<>();
+        expectedTreasuries.add(expectedTreasury);
+        when(staffRepository.findById(any())).thenReturn(Optional.of(expectedStaff));
+        when(treasuryRepository.findByStaff(any())).thenReturn(expectedTreasuries);
+        Assert.assertEquals(treasuryService.getTreasuriesByStaff(1l), expectedTreasuries);
     }
 
     @Test(expected = IllegalArgumentException.class)

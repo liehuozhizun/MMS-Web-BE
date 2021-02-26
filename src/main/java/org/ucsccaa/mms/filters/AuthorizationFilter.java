@@ -3,7 +3,6 @@ package org.ucsccaa.mms.filters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 import org.ucsccaa.mms.services.AuthorService;
 import org.ucsccaa.mms.services.impl.AuthenticationServiceImpl;
 
@@ -13,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebFilter(filterName = "AuthorizationFilter", urlPatterns = {"/members/*", "/staff/*"})
+@WebFilter(filterName = "AuthorizationFilter", urlPatterns = {"/members/*", "/staff/*", "/record/*", "/opts/*"})
 @Order(value = 2)
 public class AuthorizationFilter implements Filter {
     @Autowired

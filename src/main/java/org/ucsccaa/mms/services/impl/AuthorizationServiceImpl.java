@@ -5,10 +5,8 @@ import org.springframework.stereotype.Service;
 import org.ucsccaa.mms.domains.Authorization;
 import org.ucsccaa.mms.repositories.AuthorizationRepository;
 import org.ucsccaa.mms.services.AuthorService;
-
 import javax.annotation.PostConstruct;
 import java.util.*;
-
 
 @Service
 public class AuthorizationServiceImpl implements AuthorService {
@@ -61,7 +59,6 @@ public class AuthorizationServiceImpl implements AuthorService {
             authoritiesPut_1 = authorization1.getAuthoritySet_PUT();
             authoritiesDELETE_1 = authorization1.getAuthoritySet_DELETE();
         }
-
         Authorization authorization2 = authorizationRepo.findByLevel(Authorization.LEVEL.LEVEL_2);
         if(authorization2 == null) {
             Authorization tempAuthorization = new Authorization();
@@ -79,7 +76,6 @@ public class AuthorizationServiceImpl implements AuthorService {
             authoritiesPut_2 = authorization2.getAuthoritySet_PUT();
             authoritiesDELETE_2 = authorization2.getAuthoritySet_DELETE();
         }
-
         Authorization authorization3 = authorizationRepo.findByLevel(Authorization.LEVEL.LEVEL_3);
         if(authorization3 == null) {
             Authorization tempAuthorization = new Authorization();
@@ -115,7 +111,6 @@ public class AuthorizationServiceImpl implements AuthorService {
             authoritiesPut_3 = authorization3.getAuthoritySet_PUT();
             authoritiesDELETE_3 = authorization3.getAuthoritySet_DELETE();
         }
-
         Authorization authorization4 = authorizationRepo.findByLevel(Authorization.LEVEL.LEVEL_4);
         if(authorization4 == null) {
             Authorization tempAuthorization = new Authorization();
@@ -148,7 +143,6 @@ public class AuthorizationServiceImpl implements AuthorService {
             authoritiesPut_4 = authorization4.getAuthoritySet_PUT();
             authoritiesDELETE_4 = authorization4.getAuthoritySet_DELETE();
         }
-
         Authorization authorization5 = authorizationRepo.findByLevel(Authorization.LEVEL.LEVEL_5);
         if(authorization5 == null) {
             Authorization tempAuthorization = new Authorization();
@@ -188,7 +182,6 @@ public class AuthorizationServiceImpl implements AuthorService {
             authoritiesPut_5 = authorization5.getAuthoritySet_PUT();
             authoritiesDELETE_5 = authorization5.getAuthoritySet_DELETE();
         }
-
         getAuthoritiesTable.put(Authorization.LEVEL.LEVEL_1, authoritiesGet_1);
         getAuthoritiesTable.put(Authorization.LEVEL.LEVEL_2, authoritiesGet_2);
         getAuthoritiesTable.put(Authorization.LEVEL.LEVEL_3, authoritiesGet_3);
@@ -212,7 +205,6 @@ public class AuthorizationServiceImpl implements AuthorService {
         deleteAuthoritiesTable.put(Authorization.LEVEL.LEVEL_4, authoritiesDELETE_4);
         deleteAuthoritiesTable.put(Authorization.LEVEL.LEVEL_5, authoritiesDELETE_5);
     }
-
     public Boolean checkAuthority(String level, String method, String uri) {
         Authorization authorization = new Authorization();
         if (method.equals("GET")) {
@@ -244,7 +236,6 @@ public class AuthorizationServiceImpl implements AuthorService {
                 }
             }
         }
-
         return false;
     }
     public Authorization getByLevel(Authorization.LEVEL level) {
@@ -255,7 +246,6 @@ public class AuthorizationServiceImpl implements AuthorService {
             throw new RuntimeException("Invalid argument(this level is null)");
         }
     }
-
     public void addAuthority(Authorization.LEVEL level, String authority) {
         if (level == null) {
             throw new RuntimeException("level can't be NULL!");
@@ -277,6 +267,4 @@ public class AuthorizationServiceImpl implements AuthorService {
 
         }
     }
-
 }
-

@@ -31,7 +31,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public void init() {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
-    
+
     @Override
     public String generateToken(UserDetails userDetails) {
         if (userDetails == null) {

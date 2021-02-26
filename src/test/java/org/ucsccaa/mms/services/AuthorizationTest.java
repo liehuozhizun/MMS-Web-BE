@@ -46,7 +46,6 @@ public class AuthorizationTest {
     };
     private Authorization expectedAuthor = new Authorization(1L, level, authority_gets, authority_puts, authority_posts, authority_deletes);
     private final String stringLevel = level.toString();
-    private final String checkMethod = "GET";
     private final String checkURI = "STAFF";
     private final Boolean expectedResult = true;
 
@@ -60,8 +59,17 @@ public class AuthorizationTest {
     @Test
     public void testCheckAuthority() {
         authorService.initializor();
-        Boolean actualResult = authorService.checkAuthority(stringLevel, checkMethod, checkURI);
+        Boolean actualResult = authorService.checkAuthority(stringLevel, "GET", checkURI);
         Assert.assertEquals(expectedResult, actualResult);
+        actualResult = authorService.checkAuthority(stringLevel, "PUT", checkURI);
+        Assert.assertEquals(true, actualResult);
+        actualResult = authorService.checkAuthority(stringLevel, "POST", checkURI);
+        Assert.assertEquals(true, actualResult);
+        actualResult = authorService.checkAuthority(stringLevel, "DELETE", checkURI);
+        Assert.assertEquals(true, actualResult);
+        actualResult = authorService.checkAuthority(stringLevel, "GET", "MEMBER");
+        Assert.assertFalse(actualResult);
+
     }
     @Test
     public void testGetByLevel() {
@@ -77,8 +85,14 @@ public class AuthorizationTest {
     @Test
     public void testAddAuthority() {
         expectedAddAuthor.getAuthoritySet_GET().add(Authorization.Authority_GET.valueOf("READ_MEMBER_NAME"));
+        expectedAddAuthor.getAuthoritySet_PUT().add(Authorization.Authority_PUT.valueOf("EDIT_MEMBER"));
+        expectedAddAuthor.getAuthoritySet_POST().add(Authorization.Authority_POST.valueOf("ADD_MEMBER"));
+        expectedAddAuthor.getAuthoritySet_DELETE().add(Authorization.Authority_DELETE.valueOf("DELETE_MEMBER"));
         Mockito.when(authorizationRepository.save(Mockito.eq(expectedAddAuthor))).thenReturn(expectedAddAuthor);
         authorService.addAuthority(Authorization.LEVEL.LEVEL_1, "READ_MEMBER_NAME");
+        authorService.addAuthority(Authorization.LEVEL.LEVEL_1, "EDIT_MEMBER");
+        authorService.addAuthority(Authorization.LEVEL.LEVEL_1, "ADD_MEMBER");
+        authorService.addAuthority(Authorization.LEVEL.LEVEL_1, "DELETE_MEMBER");
     }
 
     @Test(expected = RuntimeException.class)

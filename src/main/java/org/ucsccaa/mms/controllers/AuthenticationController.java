@@ -18,8 +18,6 @@ public class AuthenticationController {
     private AuthenticationService authenticationService;
     @PostMapping("authenticate")
     public ServiceResponse<String> authenticate(@RequestBody Map<String,Object>param){
-//        newUser.setPassword((String) param.get("password"));
-//        newUser.setUserName((String) param.get("username"));
        UserDetails newUser = authenticationService.loadUserByUsername((String) param.get("username"));
 
         try {
