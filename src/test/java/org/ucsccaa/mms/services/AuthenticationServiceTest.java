@@ -2,15 +2,17 @@ package org.ucsccaa.mms.services;
 
 import static org.mockito.Mockito.when;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.Example;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.ucsccaa.mms.domains.Member;
 import org.ucsccaa.mms.domains.Staff;
 import org.ucsccaa.mms.domains.UserDetails;
@@ -18,7 +20,7 @@ import org.ucsccaa.mms.domains.Authorization;
 import org.ucsccaa.mms.repositories.UserDetailsRepository;
 import org.ucsccaa.mms.services.impl.AuthenticationServiceImpl;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class AuthenticationServiceTest {
 
     @Mock
@@ -38,8 +40,12 @@ public class AuthenticationServiceTest {
             "test","test","test","test","test","test","test","test",
             "test","test","test",true);
     private final Staff staff = new Staff(1L, "test", "test", authorization, member);
-    private final UserDetails expectedUser = new UserDetails(1L, "test", "test","[B@ebaa6cb".getBytes() ,staff);
+    private final UserDetails expectedUser = new UserDetails(1L, "test", "99ef311a786a4cc6480356fad6a6d075e536ee9799af6186af65d5cf1796aba61b273c9d0c453a8c5376d34119bc7f0be994a16ef5d5ee692180b17938498b69","[B@ebaa6cb".getBytes() ,staff);
 
+    @Before
+    public void before() {
+        ReflectionTestUtils.setField(authenticationService, "secretKey", "secret");
+    }
     @Test
     public void testGenerateToken() {
         String token = authenticationService.generateToken(expectedUser);
@@ -65,7 +71,6 @@ public class AuthenticationServiceTest {
 
     @Test
     public void testGetLevelFromToken() {
-        when(userDetailsRepository.findByUserName("test")).thenReturn(Optional.of(expectedUser));
         String token = authenticationService.generateToken(expectedUser);
         String level = authenticationService.getLevelFromToken(token);
         Assert.assertEquals(Authorization.LEVEL.LEVEL_1.toString(), level);
@@ -94,6 +99,11 @@ public class AuthenticationServiceTest {
         when(userDetailsRepository.findByUserName("test")).thenReturn(Optional.of(expectedUser));
         UserDetails userDetails = authenticationService.loadUserByUsername("test");
         Assert.assertEquals(userDetails, expectedUser);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testLoadUserByUsername_null() {
+        authenticationService.loadUserByUsername(null);
     }
 
     @Test(expected = RuntimeException.class)
@@ -128,7 +138,6 @@ public class AuthenticationServiceTest {
 
     @Test
     public void testAuthenticate() {
-        expectedUser.setPassword(authenticationService.encrypt(expectedUser.getPassword(), expectedUser.getSalt()));
         when(userDetailsRepository.findByUserName("test")).thenReturn(Optional.of(expectedUser));
         UserDetails user = authenticationService.authenticate("test", "test");
         Assert.assertEquals(expectedUser, user);
@@ -147,7 +156,6 @@ public class AuthenticationServiceTest {
 
     @Test(expected = RuntimeException.class)
     public void testAuthenticate_wrongPassword_exception() {
-        expectedUser.setPassword(authenticationService.encrypt(expectedUser.getPassword(), expectedUser.getSalt()));
         when(userDetailsRepository.findByUserName("test")).thenReturn(Optional.of(expectedUser));
         authenticationService.authenticate("test", "testtest");
     }
@@ -160,7 +168,25 @@ public class AuthenticationServiceTest {
     }
 
     @Test(expected = RuntimeException.class)
+    public void testAddUserDetail_userExists() {
+        when(userDetailsRepository.exists(Example.of(expectedUser))).thenReturn(true);
+        authenticationService.addUserDetail(expectedUser);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testAddUserDetail_encryptFail() {
+        RuntimeException e = new RuntimeException();
+        when(authenticationService.encrypt("test", "[B@ebaa6cb".getBytes())).thenThrow(e);
+        authenticationService.addUserDetail(expectedUser);
+    }
+
+    @Test(expected = RuntimeException.class)
     public void testAddUserDetail_null_exception() {
         authenticationService.addUserDetail(null);
+    }
+
+    @Test
+    public void testGetSalt() {
+        authenticationService.getSalt();
     }
 }

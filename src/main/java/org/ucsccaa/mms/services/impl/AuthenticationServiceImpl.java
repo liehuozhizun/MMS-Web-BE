@@ -60,7 +60,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (token == null) {
             return null;
         }
-        String level = (String) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("authority");
+        String level = (String) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("authorizationLevel");
         return level;
     }
 
@@ -116,11 +116,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new RuntimeException("user not found");
         }
         byte[] salt = userDetails.get().getSalt();
-        System.out.println("expectedUser salt3: " + salt.toString());
         String loginPassword = encrypt(password, salt);
         if(!loginPassword.equals(userDetails.get().getPassword()) ) {
-            System.out.println("original password4: " + password);
-            System.out.println("authenticate password5: " + loginPassword);
             throw new RuntimeException("wrong password");
         }
         return userDetails.get();
