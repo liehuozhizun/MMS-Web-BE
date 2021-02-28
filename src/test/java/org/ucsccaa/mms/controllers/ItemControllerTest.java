@@ -84,6 +84,14 @@ public class ItemControllerTest {
     }
 
     @Test
+    public void updateItemNullTest() throws Exception {
+        doThrow(new RuntimeException("ITEM CANNOT BE NULL")).when(service).updateItem(null);
+        mockMvc.perform(MockMvcRequestBuilders.put("/items")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
     public void getItemTest() throws Exception {
         when(service.getItem(anyLong())).thenReturn(expectedItem);
         mockMvc.perform(MockMvcRequestBuilders.get("/items/" + expectedItem.getId()))
@@ -114,5 +122,12 @@ public class ItemControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.delete("/items/1"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("NOT_FOUND"));
+    }
+
+    @Test
+    public void deleteItemNullTest() throws Exception {
+        doThrow(new RuntimeException("ID CANNOT BE NULL")).when(service).deleteItemById(null);
+        mockMvc.perform(MockMvcRequestBuilders.delete("/items/"))
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError());
     }
 }

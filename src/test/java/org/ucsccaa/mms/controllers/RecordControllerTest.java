@@ -24,6 +24,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.Mockito.doThrow;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = MembershipManagementSystemApplication.class)
 public class RecordControllerTest {
@@ -61,6 +63,13 @@ public class RecordControllerTest {
     }
 
     @Test
+    public void getRecordByMemberIdTest_Null() throws Exception {
+        doThrow(new RuntimeException("Invalid argument")).when(recordService).getRecordByMemberId(null);
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/record/member/");
+        mockMvc.perform(builder).andExpect(MockMvcResultMatchers.status().is4xxClientError());
+    }
+
+    @Test
     public void getRecordByStaffIdTest() throws Exception {
         Mockito.when(recordService.getRecordByStaffId(Mockito.any())).thenReturn(expectedRecordList);
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/record/staff/1");
@@ -74,5 +83,11 @@ public class RecordControllerTest {
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/record/staff/1");
         mockMvc.perform(builder).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("NOT_FOUND"));
+    }
+    @Test
+    public void getRecordByStaffId_Null() throws Exception {
+        doThrow(new RuntimeException("Invalid argument")).when(recordService).getRecordByStaffId(null);
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/record/staff/");
+        mockMvc.perform(builder).andExpect(MockMvcResultMatchers.status().is4xxClientError());
     }
 }
