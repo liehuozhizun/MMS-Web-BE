@@ -1,6 +1,7 @@
 package org.ucsccaa.mms.controllers;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -47,11 +48,11 @@ public class MemberControllerTest {
     public void configure() {
         MockitoAnnotations.initMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(memberController).build();
-        when(memberService.addMember(any())).thenReturn(expectedMember.getId());
     }
 
     @Test
     public void addMemberTest() throws Exception {
+        when(memberService.addMember(any())).thenReturn(expectedMember.getId());
         String json = objectMapper.writeValueAsString(expectedMember);
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
                 .post("/members")
@@ -102,6 +103,16 @@ public class MemberControllerTest {
     }
 
     @Test
+    public void updateMemberTest_Null() throws Exception {
+        doThrow(new RuntimeException("argument cannot be NULL")).when(memberService).updateMember(null);
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+                .put("/members");
+
+        mockMvc.perform(builder)
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError());
+    }
+
+    @Test
     public void getMemberTest() throws Exception {
         when(memberService.getMember(1L)).thenReturn(Optional.of(expectedMember));
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
@@ -121,6 +132,15 @@ public class MemberControllerTest {
 
         mockMvc.perform(builder)
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("NOT_FOUND"));
+    }
+
+    @Test
+    public void getMemberTest_Null() throws  Exception {
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+                .get("/members/id/");
+
+        mockMvc.perform(builder)
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError());
     }
 
     @Test
@@ -146,6 +166,15 @@ public class MemberControllerTest {
     }
 
     @Test
+    public void getMemberByEmailTest_Null() throws Exception {
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+                .get("/members/email/");
+
+        mockMvc.perform(builder)
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError());
+    }
+
+    @Test
     public void getMemberByPhoneTest() throws Exception {
         when(memberService.getMemberByPhone("test")).thenReturn(Optional.of(expectedMember));
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
@@ -165,6 +194,15 @@ public class MemberControllerTest {
 
         mockMvc.perform(builder)
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("NOT_FOUND"));
+    }
+
+    @Test
+    public void getMemberByPhoneTest_Null() throws Exception {
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+                .get("/members/phone/");
+
+        mockMvc.perform(builder)
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError());
     }
 
     @Test
@@ -190,6 +228,15 @@ public class MemberControllerTest {
     }
 
     @Test
+    public void getMemberByWechatTest_Null() throws Exception {
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+                .get("/members/wechat/");
+
+        mockMvc.perform(builder)
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError());
+    }
+
+    @Test
     public void getMemberByStdIdTest() throws Exception {
         when(memberService.getMemberByStdId("test")).thenReturn(Optional.of(expectedMember));
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
@@ -209,6 +256,15 @@ public class MemberControllerTest {
 
         mockMvc.perform(builder)
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("NOT_FOUND"));
+    }
+
+    @Test
+    public void getMemberByStdIdTest_Null() throws Exception {
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+                .get("/members/stdid/");
+
+        mockMvc.perform(builder)
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError());
     }
 
     @Test
@@ -236,6 +292,12 @@ public class MemberControllerTest {
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.payload").value(expectedList));
 
+    }
+
+    @Test
+    public void deleteMemberTest_Null() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete("/members/"))
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError());
     }
 
 }
